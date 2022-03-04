@@ -16,7 +16,7 @@ const sequelize_typescript_1 = require("sequelize-typescript");
 const Journal_1 = __importDefault(require("./Journal"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 let User = class User extends sequelize_typescript_1.Model {
-    static async hashPassword(user) {
+    static async encryptPassword(user) {
         if (user.password) {
             user.password = await bcrypt_1.default.hash(user.password, 10);
         }
@@ -34,10 +34,13 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "id", void 0);
 __decorate([
+    sequelize_typescript_1.Unique,
     sequelize_typescript_1.Column,
     __metadata("design:type", String)
 ], User.prototype, "username", void 0);
 __decorate([
+    sequelize_typescript_1.Unique,
+    sequelize_typescript_1.IsEmail,
     sequelize_typescript_1.Column,
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
@@ -58,7 +61,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [User]),
     __metadata("design:returntype", Promise)
-], User, "hashPassword", null);
+], User, "encryptPassword", null);
 User = __decorate([
     (0, sequelize_typescript_1.Table)({ timestamps: true })
 ], User);

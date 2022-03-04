@@ -93,7 +93,7 @@ __decorate([
 ], journalController.prototype, "deleteJournal", null);
 journalController = __decorate([
     (0, typedi_1.Service)(),
-    (0, routing_controllers_1.JsonController)('api/v1/journal'),
+    (0, routing_controllers_1.JsonController)('/journal'),
     __metadata("design:paramtypes", [journalRepository_1.default])
 ], journalController);
 exports.default = journalController;

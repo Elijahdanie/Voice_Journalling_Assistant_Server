@@ -19,17 +19,84 @@ const routing_controllers_1 = require("routing-controllers");
 const typedi_1 = require("typedi");
 const userRepository_1 = __importDefault(require("../repositories/userRepository"));
 const uuid4_1 = __importDefault(require("uuid4"));
+const auth_1 = require("../auth/auth");
 let userController = class userController {
     constructor(_userRepository) {
         this._userRepository = _userRepository;
     }
     async registerUser(payload, response) {
         try {
+            const { email, username, password } = payload;
+            if (!email || !username || !password) {
+                return response.status(500).json({
+                    message: 'Invalid values passed in',
+                    success: false
+                });
+            }
             const user = await this._userRepository.createUser(Object.assign(Object.assign({}, payload), { id: (0, uuid4_1.default)() }));
-            return response.status(200).json(user);
+            const signProp = {
+                id: user.id,
+                type: 'RegUr'
+            };
+            const token = auth_1.auth.signUser(signProp);
+            return response.status(200).json(Object.assign(Object.assign({}, user), { token, message: "sucess", success: true }));
         }
         catch (e) {
             console.log(e);
+            return response.status(500).json({
+                message: 'Unable to process request',
+                success: false
+            });
+            console.log(e);
+        }
+    }
+    async signUser(payload, response) {
+        try {
+            const { email, password } = payload;
+            if (!email || !password) {
+                return response.status(500).json({
+                    message: 'Empty values in payload',
+                    success: false
+                });
+            }
+            const user = await this._userRepository.getUser({ email });
+            if (user) {
+                var valid = user.validatePwd(password);
+                if (valid) {
+                    const signProp = {
+                        id: user.id,
+                        type: 'RegUr'
+                    };
+                    const token = auth_1.auth.signUser(signProp);
+                    return response.status(200).json(Object.assign(Object.assign({}, user), { token, message: "sucess", success: true }));
+                }
+                else {
+                    return response.status(500).json({
+                        message: 'Wrong password',
+                        success: false
+                    });
+                }
+            }
+            else {
+                return response.status(500).json({
+                    message: 'This email is not registered',
+                    success: false
+                });
+            }
+        }
+        catch (e) {
+            console.log(e);
+            return response.status(500).json({
+                message: 'Unable to process request',
+                success: false
+            });
+        }
+    }
+    async saveSettings(user, response) {
+        try {
+        }
+        catch (error) {
+            console.log(error);
         }
     }
 };
@@ -41,6 +108,22 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], userController.prototype, "registerUser", null);
+__decorate([
+    (0, routing_controllers_1.Post)('/signin'),
+    __param(0, (0, routing_controllers_1.Body)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], userController.prototype, "signUser", null);
+__decorate([
+    (0, routing_controllers_1.Post)('/settings/create'),
+    __param(0, (0, routing_controllers_1.CurrentUser)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], userController.prototype, "saveSettings", null);
 userController = __decorate([
     (0, typedi_1.Service)(),
     (0, routing_controllers_1.JsonController)('/user'),
