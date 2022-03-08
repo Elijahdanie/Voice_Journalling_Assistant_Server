@@ -6,6 +6,7 @@ class JournalPreview {
         this.id = id;
         this.title = title,
             this.updated = updated;
+        this.url = `http://web-02.daniespace.tech/journal/${id}`;
     }
 }
 exports.JournalPreview = JournalPreview;

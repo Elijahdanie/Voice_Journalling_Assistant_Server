@@ -1,17 +1,20 @@
 import { Response } from "express";
-import { JsonController, Post, Res, Body, Authorized, CurrentUser } from "routing-controllers";
+import { JsonController, Post, Res, Get, Body, Authorized, CurrentUser } from "routing-controllers";
 import { Service } from "typedi";
 import User from "../models/user";
 import userRepository from "../repositories/userRepository";
 import uuid from 'uuid4'
 import { auth } from "../auth/auth";
+import journalRepository from "../repositories/journalRepository";
 
 @Service()
 @JsonController('/user')
 export default class userController {
     _userRepository: userRepository
-    constructor(_userRepository: userRepository) {
+    _journalRepository : journalRepository
+    constructor(_userRepository: userRepository, _jouurnalRepository:journalRepository) {
         this._userRepository = _userRepository
+        this._journalRepository = _jouurnalRepository
     }
     @Post('/register')
     async registerUser(@Body() payload: any, @Res() response: Response) {
@@ -40,6 +43,27 @@ export default class userController {
                 success: false
             })
             console.log(e);
+        }
+    }
+
+    
+    @Authorized()
+    @Get('/journals')
+    async getall(@CurrentUser() user:any, @Res() res: any) {
+        try {
+            var journals = await this._journalRepository.getall(user.id)
+            return res.status(200).json({
+                message: "retrieved journal successfully",
+                "journals":journals,
+                success:true
+            })
+        } catch (error) {
+            console.log(error)
+            return res.json({
+                message: "Unable to process this request",
+                success: false,
+                statusCode: 500
+            })
         }
     }
 

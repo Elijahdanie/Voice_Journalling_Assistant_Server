@@ -20,9 +20,11 @@ const typedi_1 = require("typedi");
 const userRepository_1 = __importDefault(require("../repositories/userRepository"));
 const uuid4_1 = __importDefault(require("uuid4"));
 const auth_1 = require("../auth/auth");
+const journalRepository_1 = __importDefault(require("../repositories/journalRepository"));
 let userController = class userController {
-    constructor(_userRepository) {
+    constructor(_userRepository, _jouurnalRepository) {
         this._userRepository = _userRepository;
+        this._journalRepository = _jouurnalRepository;
     }
     async registerUser(payload, response) {
         try {
@@ -49,6 +51,24 @@ let userController = class userController {
                 success: false
             });
             console.log(e);
+        }
+    }
+    async getall(user, res) {
+        try {
+            var journals = await this._journalRepository.getall(user.id);
+            return res.status(200).json({
+                message: "retrieved journal successfully",
+                "journals": journals,
+                success: true
+            });
+        }
+        catch (error) {
+            console.log(error);
+            return res.json({
+                message: "Unable to process this request",
+                success: false,
+                statusCode: 500
+            });
         }
     }
     async signUser(payload, response) {
@@ -103,6 +123,15 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], userController.prototype, "registerUser", null);
 __decorate([
+    (0, routing_controllers_1.Authorized)(),
+    (0, routing_controllers_1.Get)('/journals'),
+    __param(0, (0, routing_controllers_1.CurrentUser)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], userController.prototype, "getall", null);
+__decorate([
     (0, routing_controllers_1.Post)('/signin'),
     __param(0, (0, routing_controllers_1.Body)()),
     __param(1, (0, routing_controllers_1.Res)()),
@@ -113,6 +142,6 @@ __decorate([
 userController = __decorate([
     (0, typedi_1.Service)(),
     (0, routing_controllers_1.JsonController)('/user'),
-    __metadata("design:paramtypes", [userRepository_1.default])
+    __metadata("design:paramtypes", [userRepository_1.default, journalRepository_1.default])
 ], userController);
 exports.default = userController;

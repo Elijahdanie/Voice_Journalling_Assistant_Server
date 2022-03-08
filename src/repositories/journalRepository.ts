@@ -13,9 +13,9 @@ export default class journalRepository {
         }
     }
 
-    async getall(user:any):Promise<JournalPreview[]>{
+    async getall(id:any):Promise<JournalPreview[]>{
         try {
-            var result = await Journal.findAll({where:{user_id:user.id}})
+            var result = await Journal.findAll({where:{userid:id}})
             return result.map(x=>new JournalPreview(x.id, x.title, x.updatedAt))
         } catch (error) {
             console.log(error)

@@ -27,14 +27,14 @@ __decorate([
     __metadata("design:type", String)
 ], Journal.prototype, "title", void 0);
 __decorate([
-    sequelize_typescript_1.Column,
+    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.JSON),
     __metadata("design:type", String)
 ], Journal.prototype, "session", void 0);
 __decorate([
     sequelize_typescript_1.Column,
     (0, sequelize_typescript_1.ForeignKey)(() => user_1.default),
     __metadata("design:type", String)
-], Journal.prototype, "user_id", void 0);
+], Journal.prototype, "userid", void 0);
 Journal = __decorate([
     (0, sequelize_typescript_1.Table)({ timestamps: true })
 ], Journal);

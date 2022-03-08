@@ -14,12 +14,11 @@ const sequelize = new Sequelize({logging:true, database:'vjournal', dialect: 'sq
 useContainer(Container)
 const app = createExpressServer({
     currentUserChecker: async (action: Action) => {
-        const token = action.request.headers['Authorization'];
-        console.log(token)
+        const token = action.request.headers['authorization'];
         return auth.getUser(token);
       },
       authorizationChecker: (action: Action) => {
-        const token = action.request.headers['Authorization'];
+        const token = action.request.headers['authorization'];
         return auth.isAuthorized(token);
       },
     cors: true,

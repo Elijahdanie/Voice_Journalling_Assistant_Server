@@ -16,12 +16,11 @@ const sequelize = new sequelize_typescript_1.Sequelize({ logging: true, database
 (0, routing_controllers_1.useContainer)(typedi_1.Container);
 const app = (0, routing_controllers_1.createExpressServer)({
     currentUserChecker: async (action) => {
-        const token = action.request.headers['Authorization'];
-        console.log(token);
+        const token = action.request.headers['authorization'];
         return auth_1.auth.getUser(token);
     },
     authorizationChecker: (action) => {
-        const token = action.request.headers['Authorization'];
+        const token = action.request.headers['authorization'];
         return auth_1.auth.isAuthorized(token);
     },
     cors: true,

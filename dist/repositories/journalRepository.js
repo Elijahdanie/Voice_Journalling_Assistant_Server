@@ -22,9 +22,9 @@ let journalRepository = class journalRepository {
             console.log(error);
         }
     }
-    async getall(user) {
+    async getall(id) {
         try {
-            var result = await Journal_1.default.findAll({ where: { user_id: user.id } });
+            var result = await Journal_1.default.findAll({ where: { userid: id } });
             return result.map(x => new journalPreview_1.JournalPreview(x.id, x.title, x.updatedAt));
         }
         catch (error) {

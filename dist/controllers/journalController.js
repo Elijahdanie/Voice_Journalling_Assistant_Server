@@ -18,6 +18,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const typedi_1 = require("typedi");
 const journalRepository_1 = __importDefault(require("../repositories/journalRepository"));
+const uuid4_1 = __importDefault(require("uuid4"));
 let journalController = class journalController {
     constructor(_journalRepository) {
         this._journalRepository = _journalRepository;
@@ -25,8 +26,9 @@ let journalController = class journalController {
     async createJournal(user, payload, res) {
         try {
             const { title, session } = payload;
-            if (!title || !session) {
-                await this._journalRepository.create(payload);
+            if (title && session) {
+                const userid = user.id;
+                await this._journalRepository.create(Object.assign(Object.assign({}, payload), { userid, id: (0, uuid4_1.default)() }));
                 return res.status(200).json({ message: "Journal Created Successfully" });
             }
             else {
@@ -44,8 +46,13 @@ let journalController = class journalController {
     }
     async updateJournal(id, payload, res) {
         try {
-            await this._journalRepository.update(id, payload);
-            return res.status(200).json({ message: "Journal updated Successfully" });
+            var journal = await this._journalRepository.update(id, payload);
+            if (journal) {
+                return res.status(200).json({ message: "Journal updated Successfully", success: false });
+            }
+            else {
+                return res.status(400).json({ message: 'Unable to update', success: false });
+            }
         }
         catch (error) {
             console.log(error);
@@ -59,43 +66,35 @@ let journalController = class journalController {
     async getJournal(id, res) {
         try {
             var journal = await this._journalRepository.get(id);
-            return res.status(200).json({
-                message: "retrieved journal successfully",
-                journal,
-                success: true
-            });
+            if (journal) {
+                return res.status(200).json({
+                    message: "retrieved journal successfully",
+                    journal,
+                    success: true
+                });
+            }
+            else {
+                return res.status(404).json({
+                    message: "Journal Not found",
+                    success: false
+                });
+            }
         }
         catch (error) {
             console.log(error);
-            return res.json({
+            return res.status(500).json({
                 message: "Unable to process this request",
-                success: false,
-                statusCode: 500
-            });
-        }
-    }
-    async getall(user, res) {
-        try {
-            var journals = await this._journalRepository.getall(user);
-            return res.status(200).json({
-                message: "retrieved journal successfully",
-                journals,
-                success: true
-            });
-        }
-        catch (error) {
-            console.log(error);
-            return res.json({
-                message: "Unable to process this request",
-                success: false,
-                statusCode: 500
+                success: false
             });
         }
     }
     async deleteJournal(id, res) {
         try {
-            await this._journalRepository.delete(id);
-            return res.status(200).json({ message: "deleted successfully" });
+            var deleted = await this._journalRepository.delete(id);
+            if (deleted)
+                return res.status(200).json({ message: "deleted successfully", success: true });
+            else
+                return res.status(404).json({ message: 'Unable to delete', success: false });
         }
         catch (error) {
             console.log(error);
@@ -136,15 +135,6 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], journalController.prototype, "getJournal", null);
-__decorate([
-    (0, routing_controllers_1.Authorized)(),
-    (0, routing_controllers_1.Get)('/all'),
-    __param(0, (0, routing_controllers_1.CurrentUser)()),
-    __param(1, (0, routing_controllers_1.Res)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], journalController.prototype, "getall", null);
 __decorate([
     (0, routing_controllers_1.Authorized)(),
     (0, routing_controllers_1.Delete)('/:id'),

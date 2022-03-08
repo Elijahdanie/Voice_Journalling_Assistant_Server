@@ -1,4 +1,4 @@
-import { Column, PrimaryKey, Unique, IsUUID, ForeignKey, Model, Table} from "sequelize-typescript";
+import { Column, PrimaryKey, Unique, IsUUID, ForeignKey, Model, Table, DataType, NotNull} from "sequelize-typescript";
 import User from "./user";
 
 @Table({timestamps:true})
@@ -11,10 +11,10 @@ export default class Journal extends Model {
     @Column
     title:string
 
-    @Column
+    @Column(DataType.JSON)
     session:string
 
     @Column
     @ForeignKey(()=>User)
-    user_id:string
+    userid:string
 }
