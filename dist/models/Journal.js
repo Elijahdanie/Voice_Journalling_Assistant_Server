@@ -25,6 +25,10 @@ __decorate([
 __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", String)
+], Journal.prototype, "title", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
 ], Journal.prototype, "session", void 0);
 __decorate([
     sequelize_typescript_1.Column,

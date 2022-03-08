@@ -24,9 +24,10 @@ export default class userRepository {
         }
     }
 
-    async getUser(email): Promise<any>
+    async getUser(payload): Promise<any>
     {
-       var user = await User.findOne({where:{email:email}, include:[Journal]})
+        console.log(payload)
+       var user = await User.findOne({where:{email:payload.email}, include:[Journal]})
        return user 
     }
 

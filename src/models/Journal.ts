@@ -9,6 +9,9 @@ export default class Journal extends Model {
     id:string
 
     @Column
+    title:string
+
+    @Column
     session:string
 
     @Column

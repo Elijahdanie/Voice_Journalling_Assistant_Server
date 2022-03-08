@@ -11,20 +11,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const typedi_1 = require("typedi");
 const Journal_1 = __importDefault(require("../models/Journal"));
+const journalPreview_1 = require("../props/journalPreview");
 let journalRepository = class journalRepository {
-    async getJournals(user) {
+    async get(id) {
         try {
-            var result = await Journal_1.default.findAll({ where: { user_id: user.id } });
+            var result = await Journal_1.default.findByPk(id);
             return result;
         }
         catch (error) {
             console.log(error);
         }
     }
-    async getJournal(id) {
+    async getall(user) {
         try {
-            var result = await Journal_1.default.findAll({ where: { id: id } });
-            return result;
+            var result = await Journal_1.default.findAll({ where: { user_id: user.id } });
+            return result.map(x => new journalPreview_1.JournalPreview(x.id, x.title, x.updatedAt));
         }
         catch (error) {
             console.log(error);
@@ -43,9 +44,24 @@ let journalRepository = class journalRepository {
         try {
             var journal = await Journal_1.default.findByPk(id);
             journal.update(payload);
+            return true;
         }
         catch (error) {
             console.log(error);
+            return false;
+        }
+    }
+    async delete(id) {
+        try {
+            var journal = await Journal_1.default.findByPk(id);
+            if (journal) {
+                await journal.destroy();
+            }
+            return true;
+        }
+        catch (error) {
+            console.log(error);
+            return false;
         }
     }
 };

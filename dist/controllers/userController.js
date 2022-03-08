@@ -26,6 +26,7 @@ let userController = class userController {
     }
     async registerUser(payload, response) {
         try {
+            console.log(payload);
             const { email, username, password } = payload;
             if (!email || !username || !password) {
                 return response.status(500).json({
@@ -39,7 +40,7 @@ let userController = class userController {
                 type: 'RegUr'
             };
             const token = auth_1.auth.signUser(signProp);
-            return response.status(200).json(Object.assign(Object.assign({}, user), { token, message: "sucess", success: true }));
+            return response.status(200).json({ user, token, message: "sucess", success: true });
         }
         catch (e) {
             console.log(e);
@@ -68,7 +69,7 @@ let userController = class userController {
                         type: 'RegUr'
                     };
                     const token = auth_1.auth.signUser(signProp);
-                    return response.status(200).json(Object.assign(Object.assign({}, user), { token, message: "sucess", success: true }));
+                    return response.status(200).json({ user, token, message: "sucess", success: true });
                 }
                 else {
                     return response.status(500).json({
@@ -92,13 +93,6 @@ let userController = class userController {
             });
         }
     }
-    async saveSettings(user, response) {
-        try {
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }
 };
 __decorate([
     (0, routing_controllers_1.Post)('/register'),
@@ -116,14 +110,6 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], userController.prototype, "signUser", null);
-__decorate([
-    (0, routing_controllers_1.Post)('/settings/create'),
-    __param(0, (0, routing_controllers_1.CurrentUser)()),
-    __param(1, (0, routing_controllers_1.Res)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], userController.prototype, "saveSettings", null);
 userController = __decorate([
     (0, typedi_1.Service)(),
     (0, routing_controllers_1.JsonController)('/user'),

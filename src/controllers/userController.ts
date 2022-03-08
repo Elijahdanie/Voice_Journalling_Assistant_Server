@@ -16,7 +16,9 @@ export default class userController {
     @Post('/register')
     async registerUser(@Body() payload: any, @Res() response: Response) {
         try {
+            console.log(payload)
             const {email, username, password} = payload;
+
             if (!email || !username || !password)
             {
                 return response.status(500).json({
@@ -30,7 +32,7 @@ export default class userController {
                 type: 'RegUr'
             }
             const token = auth.signUser(signProp)
-            return response.status(200).json({ ...user, token, message: "sucess", success: true })
+            return response.status(200).json({ user, token, message: "sucess", success: true })
         } catch (e) {
             console.log(e);
             return response.status(500).json({
@@ -61,7 +63,7 @@ export default class userController {
                         type: 'RegUr'
                     }
                     const token = auth.signUser(signProp)
-                    return response.status(200).json({ ...user, token, message: "sucess", success: true })
+                    return response.status(200).json({ user, token, message: "sucess", success: true })
                 }
                 else {
                     return response.status(500).json({
@@ -84,12 +86,23 @@ export default class userController {
         }
     }
 
-    @Post('/settings/create')
-    async saveSettings(@CurrentUser() user:any, @Res() response:any){
-        try {
+    // @Authorized()
+    // @Post('/settings/create')
+    // async saveSettings(@CurrentUser() user:any, @Res() response:any){
+    //     try {
             
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
+
+    // @Authorized()
+    // @Get('/settings')
+    // async saveSettings(@CurrentUser() user:any, @Res() response:any){
+    //     try {
+            
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
 }

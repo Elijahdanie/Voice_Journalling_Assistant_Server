@@ -32,8 +32,9 @@ let userRepository = class userRepository {
             console.log(error);
         }
     }
-    async getUser(email) {
-        var user = await user_1.default.findOne({ where: { email: email }, include: [Journal_1.default] });
+    async getUser(payload) {
+        console.log(payload);
+        var user = await user_1.default.findOne({ where: { email: payload.email }, include: [Journal_1.default] });
         return user;
     }
     async updateuserinfo(info) {
